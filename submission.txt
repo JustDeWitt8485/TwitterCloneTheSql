@@ -1,38 +1,59 @@
 Query to create a table for twitterusers
 
+CREATE TABLE twitterusers ( id SERIAL NOT NULL PRIMARY KEY, 
+                username VARCHAR(50), 
+                password VARCHAR(28), 
+                displayname VARCHAR(50) NULL );
 
 
 Query to create a table for tweets
+
+    CREATE TABLE tweets ( id SERIAL NOT NULL PRIMARY KEY, 
+                fk_author BIGINT REFERENCES twitterusers (id), 
+                message VARCHAR(200), 
+                publish_date DATE NOT NULL DEFAULT CURRENT_DATE ); 
 
 
 
 Query to create a table for notifications
 
+    CREATE TABLE notifications ( id SERIAL NOT NULL PRIMARY KEY, 
+                fk_notified_user BIGINT REFERENCES twitterusers (id), 
+                fk_tweet_to_notify BIGINT REFERENCES tweets (id), 
+                viewed BOOLEAN DEFAULT FALSE);   
+
 
 Query to create a new user (username: steve, password: hunter2, display name: steve-o)
 
-
+INSERT INTO twitterusers (username, password, displayname) VALUES ('steve', 'hunter2', 'steve-o');
 
 Query to create two new users at once: 
- -username: dave, password: asdf, display name: davey
- -username: bob, password: qwer, display name: bobbinator
- 
- 
- 
+-username: dave, password: asdf, display name: davey
+-username: bob, password: qwer, display name: bobbinator
+
+    INSERT INTO twitterusers (username, password, displayname) 
+            VALUES ('dave', 'asdf', 'davey'), 
+                    ('bob', 'qwer', 'bobbinator');
+
+
+
 Query to get the username and password of twitteruser ID 1
 
-
+    SELECT username, password FROM twitterusers WHERE id= 1;
 
 Query to get the ID of a user by the username of dave
 
-
+    SELECT id FROM twitterusers WHERE username= 'dave';
 
 Query to create a new tweet written by the user with the username steve (yes, you have to get the ID of Steve first -- hint: subqueries are your friend)
 
+    INSERT INTO tweets (fk_author, message) 
+    VALUES ((SELECT id FROM twitterusers WHERE username='steve'), 'Hello World');
 
 
 Query to get the count of tweets by username steve (hint: subqueries are your friend)
 
+    SELECT message FROM tweets WHERE (SELECT COUNT(*) FROM tweets)=1;
 
 
 Query to get the date and text of all tweets by username steve (hint: subqueries are your friend)
@@ -41,7 +62,7 @@ Query to get the date and text of all tweets by username steve (hint: subqueries
 
 Query to get the username and password of the username bob
 
-
+    SELECT username, password FROM twitterusers WHERE username= 'bob';
 
 Query to create a notification for username bob using the tweet written by username steve (hint: subqueries are your friend)
 
