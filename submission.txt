@@ -1,6 +1,6 @@
 Query to create a table for twitterusers
 
-CREATE TABLE twitterusers ( id SERIAL NOT NULL PRIMARY KEY, 
+    CREATE TABLE twitterusers ( id SERIAL NOT NULL PRIMARY KEY, 
                 username VARCHAR(50), 
                 password VARCHAR(28), 
                 displayname VARCHAR(50) NULL );
@@ -19,7 +19,7 @@ Query to create a table for notifications
 
     CREATE TABLE notifications ( id SERIAL NOT NULL PRIMARY KEY, 
                 fk_notified_user BIGINT REFERENCES twitterusers (id), 
-                fk_tweet_to_notify BIGINT REFERENCES tweets (id), 
+                fk_tweet_to_notify BIGINT REFERENCES tweets (message), 
                 viewed BOOLEAN DEFAULT FALSE);   
 
 
@@ -64,8 +64,15 @@ Query to get the username and password of the username bob
     SELECT username, password FROM twitterusers WHERE username= 'bob';
 
 Query to create a notification for username bob using the tweet written by username steve (hint: subqueries are your friend)
+
+    INSERT INTO notifications (fk_notified_user, fk_tweet_written_by, notify) 
+    VALUES ((SELECT id FROM twitterusers WHERE username='bob'), 
+    (SELECT id FROM tweets WHERE fk_author=(SELECT id FROM twitterusers WHERE username='steve')), 
+    'WOW');
+
 Query to get all IDs of notifications for bob (hint: subqueries are your friend)
 
+    SELECT id FROM notifications WHERE fk_notified_user=(SELECT id FROM twitterusers WHERE username='bob');
 
 EC: 
 
