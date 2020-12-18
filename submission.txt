@@ -17,11 +17,11 @@ Query to create a table for tweets
 
 Query to create a table for notifications
 
-    CREATE TABLE notifications ( id SERIAL NOT NULL PRIMARY KEY, 
-                fk_notified_user BIGINT REFERENCES twitterusers (id), 
-                fk_tweet_to_notify BIGINT REFERENCES tweets (message), 
-                viewed BOOLEAN DEFAULT FALSE);   
-
+    CREATE TABLE notifications ( id SERIAL NOT NULL PRIMARY KEY,                 
+                fk_notified_user BIGINT REFERENCES twitterusers (id),                 
+                fk_tweet_written_by  BIGINT REFERENCES tweets (id), 
+                notify VARCHAR(200), 
+                viewed BOOLEAN DEFAULT FALSE); 
 
 Query to create a new user (username: steve, password: hunter2, display name: steve-o)
 
